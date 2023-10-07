@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class reportingScreen extends StatelessWidget{
+class ReportingScreen extends StatelessWidget{
+  const ReportingScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: 
-      
-      Column(
+      body: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
               Align(
@@ -17,14 +17,13 @@ class reportingScreen extends StatelessWidget{
                   width: 100,
                   height: 100,
                   child: GestureDetector(
-                    child: Image(image:),
-                    onTap: () => Get.toNamed(page),
+                    child: Text("You are here!"),
                   ),
                 ),
               ),
             ],
-          ),,
-    )
+      ),
+    );
   }
 
 
