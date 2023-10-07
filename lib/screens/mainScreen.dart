@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../Routes.dart';
+import '../api/fire_management_api.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -91,7 +92,8 @@ class MainScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  TextButton(onPressed: () =>Get.toNamed(Routes.reportingScreen), child: Text("Report"))
+                  TextButton(onPressed: () =>Get.toNamed(Routes.reportingScreen), child: Text("Report")),
+                  TextButton(onPressed: () => FireManagementApi().getViirData(), child: Text("get viirs"))
                 ],
               ),
              )

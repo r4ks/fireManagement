@@ -1,7 +1,10 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
-part 'viirs.g.dart';
+part './viirs.g.dart';
+
+Iterable<Viirs> ViirsFromJson(Iterable<Map<String, dynamic>> list) =>
+    list.map((model) => Viirs.fromMap(model));
 
 @JsonSerializable()
 class Viirs {
@@ -57,4 +60,29 @@ class Viirs {
     factory Viirs.fromJson(Map<String, dynamic> json) => _$ViirsFromJson(json);
 
     Map<String, dynamic> toJson() => _$ViirsToJson(this);
+
+
+    factory Viirs.fromMap(Map<String, dynamic> json) => Viirs(
+      countryId: json['country_id'] as String,
+      latitude: num.tryParse(json['latitude'])?.toDouble() ??0,
+      longitude: num.tryParse(json['longitude'])?.toDouble() ??0,
+      brightTi4: num.tryParse(json['bright_ti4'])?.toDouble() ??0,
+      scan: num.tryParse(json['scan'])?.toDouble() ??0,
+      track: num.tryParse(json['track'])?.toDouble() ??0,
+      acqDate: DateTime.parse(json['acq_date'] as String),
+      acqTime: int.tryParse(json['acq_time']) ??0,
+      satellite: int.tryParse(json['satellite']) ??0,
+      instrument: json['instrument'] as String,
+      confidence: json['confidence'] as String,
+      version: json['version'] as String,
+      brightTi5: num.tryParse(json['bright_ti5'])?.toDouble() ??0,
+      frp: num.tryParse(json['frp'])?.toDouble() ??0,
+      daynight: json['daynight'] as String,
+    );
+
+  @override
+  String toString() {
+    return "[$countryId, $latitude, $longitude, $brightTi4, $scan, $track, $acqDate, $acqTime, $satellite, $instrument, $confidence, $version, $brightTi5, $frp]";
+
+  }
 }
