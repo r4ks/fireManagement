@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map_arcgis_example/Image_Paths.dart';
+import 'package:flutter_map_arcgis_example/controllers/report_ctrl.dart';
 import 'package:get/get.dart';
 
 class ReportingScreen extends StatelessWidget{
@@ -7,6 +8,7 @@ class ReportingScreen extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    ReportController reportController = Get.find();
     // TODO: implement build
     return SafeArea(
       child: Scaffold(
@@ -19,8 +21,48 @@ class ReportingScreen extends StatelessWidget{
                   const Padding(
                     padding: EdgeInsets.only(bottom: 20),
                   ),
-             
-                            GestureDetector(
+                    GestureDetector(
+                      onTap: (){
+                        Get.defaultDialog(title: "Report Details",content: 
+                        Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 100,
+                                child: Text(
+                                  "Type",
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
+                              const SizedBox(width: 20),
+                              Container(
+                                alignment: Alignment.topCenter,
+                                height: 40,
+                                width: 300,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child: DropdownButton<String>(
+                                   value: selectedChoice1,
+                                   hint: Text("Choose Report Type"),
+                                   onChanged: (String? newValue) {
+                                    Get.back();
+                                    Get.defaultDialog(title: "Report sucessfull", middleText: "Sucessfully Reported " + (newValue ?? ""));
+                                   },
+                                   items: reportFirechoices.map<DropdownMenuItem<String>>((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );}).toList(),
+                              ),
+                              ),
+                            ],
+                          ),
+                        ],
+                                 ));
+                                },
                               child: Container(
                                 padding: EdgeInsets.all(20),
                                 child: Row(
@@ -33,7 +75,47 @@ class ReportingScreen extends StatelessWidget{
                                 ),
                               ),
                             ),
-                GestureDetector(
+                          GestureDetector(
+                              onTap: (){ Get.defaultDialog(title: "Report Details",content: 
+                        Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 100,
+                                child: Text(
+                                  "Type",
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
+                              const SizedBox(width: 20),
+                              Container(
+                                alignment: Alignment.topCenter,
+                                height: 40,
+                                width: 300,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child: DropdownButton<String>(
+                                   value: selectedChoice2,
+                                   hint: Text("Choose Report Type"),
+                                   onChanged: (String? newValue) {
+                                    Get.back();
+                                    Get.defaultDialog(title: "Report sucessfull", middleText: "Sucessfully Reported " + (newValue ?? ""));
+                                   },
+                                   items: reportInjuryChoices.map<DropdownMenuItem<String>>((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );}).toList(),
+                              ),
+                              ),
+                            ],
+                          ),
+                        ],
+                                 ));},
+
                               child: Container(
                                 padding: EdgeInsets.all(20),
                                 child: Row(
@@ -41,13 +123,15 @@ class ReportingScreen extends StatelessWidget{
                                   children: [
                                     Text("Report Injury"),
                                     //Image here
-                                    Image.asset(ImagePaths.fireIcon)
+                                    Image.asset(ImagePaths.redCrossIcon)
                                   ],
                                 ),
                               ),
                             ),
 
                             GestureDetector(
+                              onTap: (){Get.defaultDialog(title: "Report Sucessful",middleText: "Report Details" );},
+
                               child: Container(
                                 padding: EdgeInsets.all(20),
                                 child: Row(
@@ -55,12 +139,13 @@ class ReportingScreen extends StatelessWidget{
                                   children: [
                                     Text("Report Road blocks"),
                                     //Image here
-                                    Image.asset(ImagePaths.fireIcon)
+                                    Image.asset(ImagePaths.roadBlockIcon)
                                   ],
                                 ),
                               ),
                             ),
                             GestureDetector(
+                              onTap: (){Get.defaultDialog(title: "Report Sucessful",middleText: "Report Details" );},
                               child: Container(
                                 padding: EdgeInsets.all(20),
                                 child: Row(
@@ -68,7 +153,7 @@ class ReportingScreen extends StatelessWidget{
                                   children: [
                                     Text("Report enviromental hazards"),
                                     //Image here
-                                    Image.asset(ImagePaths.fireIcon)
+                                    Image.asset(ImagePaths.enviromentalHazedIcon)
                                   ],
                                 ),
                               ),
