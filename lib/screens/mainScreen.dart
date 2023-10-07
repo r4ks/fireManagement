@@ -27,6 +27,8 @@ class _MainScreenState extends State<MainScreen> {
     // TODO: implement initState
     super.initState();
     getViirData();
+
+    getWindData();
   }
 
 
@@ -140,5 +142,9 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
     );
+  }
+  
+  void getWindData() {
+    
   }
 }

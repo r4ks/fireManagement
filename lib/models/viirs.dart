@@ -1,7 +1,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
-part './viirs.g.dart';
+part 'viirs.g.dart';
 
 Iterable<Viirs> ViirsFromJson(Iterable<Map<String, dynamic>> list) =>
     list.map((model) => Viirs.fromMap(model));
