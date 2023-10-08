@@ -57,8 +57,14 @@ class _MainScreenState extends State<MainScreen> {
           appBar: AppBar(title: Text('ArcGIS')
     
           ),
-          body: Obx((() => 
-             Padding(
+          body: Obx((() {
+
+             if (alarm_controller.isAlarm.value) {
+    Future.delayed(Duration.zero, () => 
+      Get.defaultDialog(content: AlarmWidget())
+           );
+          }
+             return Padding(
               padding: EdgeInsets.all(8.0),
               child: Column(
                 children: [
@@ -134,10 +140,13 @@ class _MainScreenState extends State<MainScreen> {
                   ],
                 ) 
                   ),
-                  TextButton(onPressed: () =>Get.toNamed(Routes.reportingScreen), child: Text("Report")),
+                  TextButton(onPressed: () => alarm_controller.isAlarm.value = true, child: Text("Test"),//Get.toNamed(Routes.reportingScreen), child: Text("Report")
+                  
+                  ),
                 ],
               ),
-             )
+             );
+          }
             ),
           ),
         ),

@@ -5,4 +5,5 @@ class ImagePaths {
   static const String roadBlockIcon = "assets/images/roadblock trans.png";
   static const String enviromentalHazedIcon = "assets/images/enviromentalHazed trans.png";
   static const String volunteerIcon = "assets/images/volunterr trans.png";
+  static const String alarmIcon = "assets/images/alarm.png";
 }
