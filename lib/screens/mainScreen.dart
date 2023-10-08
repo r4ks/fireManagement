@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:rxdart/rxdart.dart';
+import '../Image_Paths.dart';
 import '../Routes.dart';
 import '../api/fire_management_api.dart';
 import '../api/weather_api.dart';
@@ -34,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
   final windDirections = <Marker>[];
   StreamSubscription<MapEvent>? mapSub;
   
-  double zoom = 1;
+  double zoom = 10;
 
   @override
   void dispose() {
@@ -50,6 +51,7 @@ class _MainScreenState extends State<MainScreen> {
 
     // subscribe to map events
     mapSub = mapController.mapEventStream.debounceTime(Duration(milliseconds: 600)).listen((event) async {
+      zoom = mapController.zoom ?? 10;
       final ws = await wheatherApi.getWindSpeedData(latitude: event.center.latitude, longitude: event.center.longitude);
       windSpeeds.add(Marker(
         point: LatLng(ws.latitude ??0, ws.longitude ??0),
@@ -133,12 +135,15 @@ class _MainScreenState extends State<MainScreen> {
   }
 
 
+  double baseSize = 80.0;
+
   double getZoomScaledSize(double baseSize) {
-    return baseSize * zoom * 0.1; // Adjust this formula as needed.
+    return baseSize * zoom * 0.15; // Adjust this formula as needed.
   }
 
   @override
   Widget build(BuildContext context) {
+
 
     AlarmController alarm_controller = Get.find<AlarmController>();
     ReportController reportController = Get.find<ReportController>();
@@ -193,28 +198,22 @@ class _MainScreenState extends State<MainScreen> {
                       markers: windDirections,
                     ),
                     //Bisher Fake Markers
-                    MarkerLayerOptions(
-                      markers: reportController.bisherMarkers.value,
-                    ),
+                    // MarkerLayerOptions(
+                    //   markers: reportController.bisherMarkers.value,
+                    // ),
+                    OverlayImageLayerOptions(overlayImages: [
+                    OverlayImage(bounds: LatLngBounds(LatLng(37.084003, 35.361670), LatLng(37.081041, 35.357764)),
+                      imageProvider: Image.asset(ImagePaths.shelterIcon).image)
+                    ]),
                     // danger zone
-          MarkerLayerOptions(
-            markers: [
-              Marker(
-                width: getZoomScaledSize(30.0),
-                height: getZoomScaledSize(30.0),
-                point: initialPosition(),
-                builder: (context) => SvgPicture.asset(
-                  'assets/images/ellipse.svg',
-                  width: getZoomScaledSize(30.0),
-                  height: getZoomScaledSize(30.0),
-                ),
-              ),
-            ],
-          ),
+                    OverlayImageLayerOptions(overlayImages: [
+                      OverlayImage(bounds: LatLngBounds(LatLng(37.07916541977954, 35.369805781605216), LatLng(37.071673, 35.380400)), imageProvider: Image.asset('assets/images/fireSVG.png').image)
+                    ])
+
+
                     // MarkerLayerOptions(
                     //   markers: _createEllipse(initialPosition(), 0.1, 0.05),
                     // ),
-
                   ],
                 )
                   ),
@@ -231,5 +230,5 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  LatLng initialPosition() => LatLng(37.07916541977954, 35.369805781605216);
+  LatLng initialPosition() => LatLng(37.084003, 35.361670);
 }
