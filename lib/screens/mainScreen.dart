@@ -170,7 +170,7 @@ class _MainScreenState extends State<MainScreen> {
                   ],
                 )
                   ),
-                  TextButton(onPressed: () => alarm_controller.isAlarm.value = true, child: Text("Test"),//Get.toNamed(Routes.reportingScreen), child: Text("Report")
+                  TextButton(onPressed: () => Get.toNamed(Routes.reportingScreen), child: Text("Report")
                   
                   ),
                 ],
