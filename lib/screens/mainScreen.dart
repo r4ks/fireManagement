@@ -55,7 +55,7 @@ class _MainScreenState extends State<MainScreen> {
 
       final wd = await wheatherApi.getWindDirectionData(latitude: event.center.latitude, longitude: event.center.longitude);
       windDirections.add(Marker(
-        point: LatLng((wd.latitude ??0) +5, (wd.longitude ??0) + 5),
+        point: LatLng((wd.latitude ??0) +0.05, (wd.longitude ??0) + 0.05),
         width: 80,
         height: 80,
         builder: (context) => Icon(Icons.arrow_forward)),
@@ -74,7 +74,7 @@ class _MainScreenState extends State<MainScreen> {
 
       final wd = await wheatherApi.getWindDirectionData(latitude: mapController.center.latitude, longitude: mapController.center.longitude);
       windDirections.add(Marker(
-        point: LatLng((wd.latitude ??0) +5, (wd.longitude ??0) + 5),
+        point: LatLng((wd.latitude ??0) +0.05, (wd.longitude ??0) + 0.05),
         width: 80,
         height: 80,
         builder: (context) => Icon(Icons.arrow_forward)),
@@ -138,15 +138,35 @@ class _MainScreenState extends State<MainScreen> {
                       'http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
                       subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
                     ),
+
+                    // fire spots
                     MarkerLayerOptions(
                       markers: spots,
                     ),
+
+                    // wind speed
                     MarkerLayerOptions(
                       markers: windSpeeds,
                     ),
+
+                    // wind direction
                     MarkerLayerOptions(
                       markers: windDirections,
                     ),
+
+                    // danger zone
+                    CircleLayerOptions(
+                      circles: [
+                          CircleMarker(
+                            point: LatLng(41.1075,37.32225),
+                            color: Colors.red.withOpacity(0.7),
+                            borderStrokeWidth: 2,
+                            useRadiusInMeter: false,
+                            radius: 60,  // in pixels
+                          ),
+                        ],
+                      ),
+
                   ],
                 )
                   ),
