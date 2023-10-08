@@ -108,7 +108,7 @@ class _MainScreenState extends State<MainScreen> {
     // TODO: implement build
     return SafeArea(
       child: Scaffold(
-          appBar: AppBar(title: Text('ArcGIS')
+          appBar: AppBar(title: Text('FireRanger')
           ),
           body: Obx((() {
 
