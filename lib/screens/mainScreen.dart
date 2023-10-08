@@ -162,66 +162,73 @@ class _MainScreenState extends State<MainScreen> {
           }
              return Padding(
               padding: EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  alarm_controller.isAlarm.value ? AlarmWidget()
-                  : 
-                  SizedBox(), 
-                  Flexible(
-                    child:
-                   FlutterMap(
-                  mapController: mapController,
-                  options: MapOptions(
-                    center: LatLng(37.07916541977954, 35.369805781605216),
-                    zoom: 14.0,
-                    plugins: [EsriPlugin()],
+              child: Center(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        alarm_controller.isAlarm.value ? AlarmWidget()
+                        : 
+                        SizedBox(),
+                      ],
+                    ), 
+                    Flexible(
+                      child:
+                     FlutterMap(
+                    mapController: mapController,
+                    options: MapOptions(
+                      center: LatLng(37.07916541977954, 35.369805781605216),
+                      zoom: 14.0,
+                      plugins: [EsriPlugin()],
 
-                  ),
-                  layers: [
-                    TileLayerOptions(
-                      urlTemplate:
-                      'http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
-                      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
                     ),
+                    layers: [
+                      TileLayerOptions(
+                        urlTemplate:
+                        'http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                      ),
 
-                    // fire spots
-                    MarkerLayerOptions(
-                      markers: spots,
+                      // fire spots
+                      MarkerLayerOptions(
+                        markers: spots,
+                      ),
+
+                      // wind speed
+                      MarkerLayerOptions(
+                        markers: windSpeeds,
+                      ),
+
+                      // wind direction
+                      MarkerLayerOptions(
+                        markers: windDirections,
+                      ),
+                      //Bisher Fake Markers
+                      // MarkerLayerOptions(
+                      //   markers: reportController.bisherMarkers.value,
+                      // ),
+                      OverlayImageLayerOptions(overlayImages: [
+                      OverlayImage(bounds: LatLngBounds(LatLng(37.084003, 35.361670), LatLng(37.081041, 35.357764)),
+                        imageProvider: Image.asset(ImagePaths.shelterIcon).image)
+                      ]),
+                      // danger zone
+                      OverlayImageLayerOptions(overlayImages: [
+                        OverlayImage(bounds: LatLngBounds(LatLng(37.07916541977954, 35.369805781605216), LatLng(37.071673, 35.380400)), imageProvider: Image.asset('assets/images/fireSVG.png').image)
+                      ])
+
+
+                      // MarkerLayerOptions(
+                      //   markers: _createEllipse(initialPosition(), 0.1, 0.05),
+                      // ),
+                    ],
+                  )
                     ),
-
-                    // wind speed
-                    MarkerLayerOptions(
-                      markers: windSpeeds,
+                    TextButton(onPressed: () => Get.toNamed(Routes.reportingScreen), child: Text("Report")
+                    
                     ),
-
-                    // wind direction
-                    MarkerLayerOptions(
-                      markers: windDirections,
-                    ),
-                    //Bisher Fake Markers
-                    // MarkerLayerOptions(
-                    //   markers: reportController.bisherMarkers.value,
-                    // ),
-                    OverlayImageLayerOptions(overlayImages: [
-                    OverlayImage(bounds: LatLngBounds(LatLng(37.084003, 35.361670), LatLng(37.081041, 35.357764)),
-                      imageProvider: Image.asset(ImagePaths.shelterIcon).image)
-                    ]),
-                    // danger zone
-                    OverlayImageLayerOptions(overlayImages: [
-                      OverlayImage(bounds: LatLngBounds(LatLng(37.07916541977954, 35.369805781605216), LatLng(37.071673, 35.380400)), imageProvider: Image.asset('assets/images/fireSVG.png').image)
-                    ])
-
-
-                    // MarkerLayerOptions(
-                    //   markers: _createEllipse(initialPosition(), 0.1, 0.05),
-                    // ),
                   ],
-                )
-                  ),
-                  TextButton(onPressed: () => Get.toNamed(Routes.reportingScreen), child: Text("Report")
-                  
-                  ),
-                ],
+                ),
               ),
              );
           }

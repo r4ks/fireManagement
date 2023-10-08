@@ -20,15 +20,7 @@ class AlarmWidget extends StatelessWidget{
                           children: [
                             Row(
                               children: [
-                                SizedBox(
-                                  width: 200,
-                                  child: Text(
-                                    alarmController.alarmText.value,
-                                    textAlign: TextAlign.end,
-                                  ),
-                                ),
-                                const SizedBox(width: 20),
-                                Container(
+                                 Container(
                                   width: 50,
                                   height: 50,
                                   alignment: Alignment.topCenter,
@@ -36,7 +28,17 @@ class AlarmWidget extends StatelessWidget{
                                     borderRadius: BorderRadius.circular(14),
                                   ),
                                   child: Image.asset(ImagePaths.alarmIcon),
-                                ),]), ],),
+                                ),
+                                 const SizedBox(width: 20),
+                                SizedBox(
+                                  width: 200,
+                                  child: Text(
+                                    alarmController.alarmText.value,
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ),
+                               
+                               ]), ],),
     );
   }
 
