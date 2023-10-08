@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +8,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_arcgis_example/controllers/alarm_ctrl.dart';
 import 'package:flutter_map_arcgis_example/controllers/report_ctrl.dart';
 import 'package:flutter_map_arcgis_example/widgets/alarm_Widget.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:rxdart/rxdart.dart';
+import '../Image_Paths.dart';
 import '../Routes.dart';
 import '../api/fire_management_api.dart';
 import '../api/weather_api.dart';
@@ -31,6 +34,8 @@ class _MainScreenState extends State<MainScreen> {
   final windSpeeds = <Marker>[];
   final windDirections = <Marker>[];
   StreamSubscription<MapEvent>? mapSub;
+  
+  double zoom = 10;
 
   @override
   void dispose() {
@@ -46,6 +51,7 @@ class _MainScreenState extends State<MainScreen> {
 
     // subscribe to map events
     mapSub = mapController.mapEventStream.debounceTime(Duration(milliseconds: 600)).listen((event) async {
+      zoom = mapController.zoom ?? 10;
       final ws = await wheatherApi.getWindSpeedData(latitude: event.center.latitude, longitude: event.center.longitude);
       windSpeeds.add(Marker(
         point: LatLng(ws.latitude ??0, ws.longitude ??0),
@@ -65,6 +71,7 @@ class _MainScreenState extends State<MainScreen> {
 
     // get wind speed and direction when map is ready
     mapController.onReady.then((value) async {
+     zoom = mapController.zoom ?? 10;
       final ws = await wheatherApi.getWindSpeedData(latitude: mapController.center.latitude, longitude: mapController.center.longitude);
       windSpeeds.add(Marker(
         point: LatLng(ws.latitude ??0, ws.longitude ??0),
@@ -100,8 +107,43 @@ class _MainScreenState extends State<MainScreen> {
     )));
   }
 
+    List<Marker> _createEllipse(LatLng center, double latRadius, double lngRadius) {
+    final int steps = 36; // The number of points to define the ellipse
+    List<Marker> ellipseMarkers = [];
+
+    for (int i = 0; i < steps; i++) {
+      double theta = (i / steps) * (2 * 3.14159265358979323846);
+      double lat = center.latitude + latRadius * (3.14159265358979323846 / 180) * cos(theta);
+      double lng = center.longitude + lngRadius * (3.14159265358979323846 / 180) * sin(theta);
+
+      ellipseMarkers.add(
+        Marker(
+          width: 10.0,
+          height: 10.0,
+          point: LatLng(lat, lng),
+          builder: (context) => Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.red,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return ellipseMarkers;
+  }
+
+
+  double baseSize = 80.0;
+
+  double getZoomScaledSize(double baseSize) {
+    return baseSize * zoom * 0.15; // Adjust this formula as needed.
+  }
+
   @override
   Widget build(BuildContext context) {
+
 
     AlarmController alarm_controller = Get.find<AlarmController>();
     ReportController reportController = Get.find<ReportController>();
@@ -130,7 +172,7 @@ class _MainScreenState extends State<MainScreen> {
                    FlutterMap(
                   mapController: mapController,
                   options: MapOptions(
-                    center: LatLng(41.1075,37.32225),
+                    center: LatLng(37.07916541977954, 35.369805781605216),
                     zoom: 14.0,
                     plugins: [EsriPlugin()],
 
@@ -157,22 +199,22 @@ class _MainScreenState extends State<MainScreen> {
                       markers: windDirections,
                     ),
                     //Bisher Fake Markers
-                    MarkerLayerOptions(
-                      markers: reportController.bisherMarkers.value,
-                    ),
+                    // MarkerLayerOptions(
+                    //   markers: reportController.bisherMarkers.value,
+                    // ),
+                    OverlayImageLayerOptions(overlayImages: [
+                    OverlayImage(bounds: LatLngBounds(LatLng(37.084003, 35.361670), LatLng(37.081041, 35.357764)),
+                      imageProvider: Image.asset(ImagePaths.shelterIcon).image)
+                    ]),
                     // danger zone
-                    CircleLayerOptions(
-                      circles: [
-                          CircleMarker(
-                            point: LatLng(41.1075,37.32225),
-                            color: Colors.red.withOpacity(0.7),
-                            borderStrokeWidth: 2,
-                            useRadiusInMeter: false,
-                            radius: 60,  // in pixels
-                          ),
-                        ],
-                      ),
+                    OverlayImageLayerOptions(overlayImages: [
+                      OverlayImage(bounds: LatLngBounds(LatLng(37.07916541977954, 35.369805781605216), LatLng(37.071673, 35.380400)), imageProvider: Image.asset('assets/images/fireSVG.png').image)
+                    ])
 
+
+                    // MarkerLayerOptions(
+                    //   markers: _createEllipse(initialPosition(), 0.1, 0.05),
+                    // ),
                   ],
                 )
                   ),
@@ -188,4 +230,6 @@ class _MainScreenState extends State<MainScreen> {
         ),
     );
   }
+
+  LatLng initialPosition() => LatLng(37.084003, 35.361670);
 }
