@@ -26,6 +26,8 @@ class _MainScreenState extends State<MainScreen> {
   final wheatherApi = Get.find<WeatherApi>();
   final mapController = MapController();
   final spots = <Marker>[];
+  final windSpeeds = <Marker>[];
+  final windDirections = <Marker>[];
   StreamSubscription<MapEvent>? mapSub;
 
   @override
@@ -38,18 +40,44 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
 
+    getViirData();
+
     // subscribe to map events
-    mapSub = mapController.mapEventStream.debounceTime(Duration(seconds: 1)).listen((event) async {
-      final result = await wheatherApi.getWindSpeedData(latitude: event.center.latitude, longitude: event.center.longitude);
-      final result1 = await wheatherApi.getWindDirectionData(latitude: event.center.latitude, longitude: event.center.longitude);
-      print(result);
+    mapSub = mapController.mapEventStream.debounceTime(Duration(milliseconds: 600)).listen((event) async {
+      final ws = await wheatherApi.getWindSpeedData(latitude: event.center.latitude, longitude: event.center.longitude);
+      windSpeeds.add(Marker(
+        point: LatLng(ws.latitude ??0, ws.longitude ??0),
+        width: 80,
+        height: 80,
+        builder: (context) => Icon(Icons.air)),
+      );
+
+      final wd = await wheatherApi.getWindDirectionData(latitude: event.center.latitude, longitude: event.center.longitude);
+      windDirections.add(Marker(
+        point: LatLng((wd.latitude ??0) +5, (wd.longitude ??0) + 5),
+        width: 80,
+        height: 80,
+        builder: (context) => Icon(Icons.arrow_forward)),
+      );
     });
 
     // get wind speed and direction when map is ready
     mapController.onReady.then((value) async {
-      final result = await wheatherApi.getWindSpeedData(latitude: mapController.center.latitude, longitude: mapController.center.longitude);
-      final result1 = await wheatherApi.getWindDirectionData(latitude: mapController.center.latitude, longitude: mapController.center.longitude);
-      print(result);
+      final ws = await wheatherApi.getWindSpeedData(latitude: mapController.center.latitude, longitude: mapController.center.longitude);
+      windSpeeds.add(Marker(
+        point: LatLng(ws.latitude ??0, ws.longitude ??0),
+        width: 80,
+        height: 80,
+        builder: (context) => Icon(Icons.air)),
+      );
+
+      final wd = await wheatherApi.getWindDirectionData(latitude: mapController.center.latitude, longitude: mapController.center.longitude);
+      windDirections.add(Marker(
+        point: LatLng((wd.latitude ??0) +5, (wd.longitude ??0) + 5),
+        width: 80,
+        height: 80,
+        builder: (context) => Icon(Icons.arrow_forward)),
+      );
     });
   }
 
@@ -66,12 +94,8 @@ class _MainScreenState extends State<MainScreen> {
           color: Color.fromARGB(0, 256 ~/(i.brightTi4 - 273.15), 0, 0),
           height: i.scan,
           width: i.track,
-          child: Icon(Icons.fireplace)),
+          child: Icon(Icons.local_fire_department)),
     )));
-  }
-
-  List<Marker> createMarkersFromVIIRData() {
-    return spots;
   }
 
   @override
@@ -107,23 +131,14 @@ class _MainScreenState extends State<MainScreen> {
                       'http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
                       subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
                     ),
-                    FeatureLayerOptions(
-                      "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0",
-                      "point",
-                      render:(dynamic attributes){
-                        // You can render by attribute
-                        return PointOptions(
-                          width: 30.0,
-                          height: 30.0,
-                          builder: const Icon(Icons.pin_drop),
-                        );
-                      },
-                      onTap: (attributes, LatLng location) {
-                        print(attributes);
-                      },
+                    MarkerLayerOptions(
+                      markers: spots,
                     ),
                     MarkerLayerOptions(
-                      markers: createMarkersFromVIIRData(),
+                      markers: windSpeeds,
+                    ),
+                    MarkerLayerOptions(
+                      markers: windDirections,
                     ),
                   ],
                 )
