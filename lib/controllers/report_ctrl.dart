@@ -20,7 +20,7 @@ class ReportController extends GetxController{
     RxString fireReportChoice = "Wild Fire".obs;
     RxString injuryReportChoice = "Lightly Injured".obs;
     RxString roadBlockReportChoice = "Closed".obs;
-    RxString enviromentalChoice = "Dry Leaves".obs;
+    RxString enviromentalChoice = "Flammable Object".obs;
     RxString volunteerChoice = "Not Volunteering".obs;
 
     void updateMarkers(){
