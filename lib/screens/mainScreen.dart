@@ -110,6 +110,7 @@ class _MainScreenState extends State<MainScreen> {
       child: Scaffold(
           appBar: AppBar(title: Text('FireRanger')
           ),
+          floatingActionButton: IconButton(onPressed: () => alarm_controller.isAlarm.value = true, icon: Icon(Icons.alarm)),
           body: Obx((() {
 
              if (alarm_controller.isAlarm.value) {

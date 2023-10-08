@@ -16,6 +16,7 @@ class AlarmWidget extends StatelessWidget{
     return SafeArea(
       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Row(
                               children: [
