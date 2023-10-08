@@ -37,18 +37,15 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    getViirData();
 
-    getWindData();
-
+    // subscribe to map events
     mapSub = mapController.mapEventStream.debounceTime(Duration(seconds: 1)).listen((event) async {
       final result = await wheatherApi.getWindSpeedData(latitude: event.center.latitude, longitude: event.center.longitude);
       final result1 = await wheatherApi.getWindDirectionData(latitude: event.center.latitude, longitude: event.center.longitude);
       print(result);
     });
-  }
 
-  getWindData()  {
+    // get wind speed and direction when map is ready
     mapController.onReady.then((value) async {
       final result = await wheatherApi.getWindSpeedData(latitude: mapController.center.latitude, longitude: mapController.center.longitude);
       final result1 = await wheatherApi.getWindDirectionData(latitude: mapController.center.latitude, longitude: mapController.center.longitude);
@@ -57,29 +54,21 @@ class _MainScreenState extends State<MainScreen> {
   }
 
 
-      getViirData() async {
-                    final data = await FireManagementApi().getViirData();
-                    spots.addAll(data.map((i) =>
-                      Marker(
-                        point: LatLng(i.latitude, i.longitude),
-                        width: 80,
-                        height: 80,
-                        builder: (context) => Container(
-                          color: Color.fromARGB(0, 256 ~/(i.brightTi4 - 273.15), 0, 0),
-                          height: i.scan,
-                          width: i.track,
-                          child: Icon(Icons.fireplace)),
-                      )));
 
-    // print(spots.asMap().map((index, value) => MapEntry(index, value)).entries.where((e) => e.key % 3 == 0).toList());
-
-    print(spots.where((e) =>
-      e.point.longitude >= mapController.bounds!.west
-      && e.point.longitude <= mapController.bounds!.east
-      && e.point.latitude >= mapController.bounds!.south
-      && e.point.latitude <= mapController.bounds!.north
-      ).toList());
-    }
+  getViirData() async {
+    final data = await FireManagementApi().getViirData();
+    spots.addAll(data.map((i) =>
+      Marker(
+        point: LatLng(i.latitude, i.longitude),
+        width: 80,
+        height: 80,
+        builder: (context) => Container(
+          color: Color.fromARGB(0, 256 ~/(i.brightTi4 - 273.15), 0, 0),
+          height: i.scan,
+          width: i.track,
+          child: Icon(Icons.fireplace)),
+    )));
+  }
 
   List<Marker> createMarkersFromVIIRData() {
     return spots;
