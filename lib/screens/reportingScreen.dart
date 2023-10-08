@@ -48,6 +48,8 @@ class ReportingScreen extends StatelessWidget{
                                    value: reportController.fireReportChoice.value,
                                    hint: Text("Choose Report Type"),
                                    onChanged: (String? newValue) {
+                                    reportController.reportedFire.value = true;
+                                    reportController.updateMarkers();
                                     reportController.fireReportChoice.value = newValue ?? reportController.fireReportChoice.value;
                                     Get.back();
                                     Get.defaultDialog(title: "Report sucessfull", middleText: "Sucessfully Reported " + (newValue ?? ""));
@@ -102,6 +104,8 @@ class ReportingScreen extends StatelessWidget{
                                    value: reportController.injuryReportChoice.value,
                                    hint: Text("Choose Report Type"),
                                    onChanged: (String? newValue) {
+                                    reportController.reportedInjury.value = true;
+                                    reportController.updateMarkers();
                                     Get.back();
                                     Get.defaultDialog(title: "Report sucessfull", middleText: "Sucessfully Reported " + (newValue ?? ""));
                                    },
@@ -156,6 +160,8 @@ class ReportingScreen extends StatelessWidget{
                                    value: reportController.roadBlockReportChoice.value,
                                    hint: Text("Choose Report Type"),
                                    onChanged: (String? newValue) {
+                                    reportController.reportedBlock.value = true;
+                                    reportController.updateMarkers();
                                     Get.back();
                                     Get.defaultDialog(title: "Report sucessfull", middleText: "Sucessfully Reported " + (newValue ?? ""));
                                    },
@@ -209,6 +215,8 @@ class ReportingScreen extends StatelessWidget{
                                    value: reportController.enviromentalChoice.value,
                                    hint: Text("Choose Report Type"),
                                    onChanged: (String? newValue) {
+                                    reportController.reportedEnviromental.value = true;
+                                    reportController.updateMarkers();
                                     Get.back();
                                     Get.defaultDialog(title: "Report sucessfull", middleText: "Sucessfully Reported " + (newValue ?? ""));
                                    },
@@ -261,6 +269,8 @@ class ReportingScreen extends StatelessWidget{
                                    value: reportController.volunteerChoice.value,
                                    hint: Text("Choose Report Type"),
                                    onChanged: (String? newValue) {
+                                    reportController.reportedVolunteer.value = true;
+                                    reportController.updateMarkers();
                                     Get.back();
                                     Get.defaultDialog(title: "Report sucessfull", middleText: "Sucessfully Updated Volunteer Status To " + (newValue ?? ""));
                                    },
