@@ -17,7 +17,7 @@ class WindDirection {
     @JsonKey(name: "timezone_abbreviation")
     String timezoneAbbreviation;
     @JsonKey(name: "elevation")
-    int elevation;
+    double elevation;
     @JsonKey(name: "hourly_units")
     HourlyUnits hourlyUnits;
     @JsonKey(name: "hourly")

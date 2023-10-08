@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map_arcgis/flutter_map_arcgis.dart';
@@ -6,8 +8,10 @@ import 'package:flutter_map_arcgis_example/controllers/alarm_ctrl.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:rxdart/rxdart.dart';
 import '../Routes.dart';
 import '../api/fire_management_api.dart';
+import '../api/weather_api.dart';
 import '../controllers/map_ctrl.dart';
 
 class MainScreen extends StatefulWidget {
@@ -18,17 +22,38 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final map = Get.find<AirMapController>();
-  
+  // final map = Get.find<AirMapController>();
+  final wheatherApi = Get.find<WeatherApi>();
+  final mapController = MapController();
   final spots = <Marker>[];
+  StreamSubscription<MapEvent>? mapSub;
+
+  @override
+  void dispose() {
+    mapSub?.cancel();
+    super.dispose();
+  }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getViirData();
 
     getWindData();
+
+    mapSub = mapController.mapEventStream.debounceTime(Duration(seconds: 1)).listen((event) async {
+      final result = await wheatherApi.getWindSpeedData(latitude: event.center.latitude, longitude: event.center.longitude);
+      final result1 = await wheatherApi.getWindDirectionData(latitude: event.center.latitude, longitude: event.center.longitude);
+      print(result);
+    });
+  }
+
+  getWindData()  {
+    mapController.onReady.then((value) async {
+      final result = await wheatherApi.getWindSpeedData(latitude: mapController.center.latitude, longitude: mapController.center.longitude);
+      final result1 = await wheatherApi.getWindDirectionData(latitude: mapController.center.latitude, longitude: mapController.center.longitude);
+      print(result);
+    });
   }
 
 
@@ -39,9 +64,22 @@ class _MainScreenState extends State<MainScreen> {
                         point: LatLng(i.latitude, i.longitude),
                         width: 80,
                         height: 80,
-                        builder: (context) => Icon(Icons.fire_extinguisher),
+                        builder: (context) => Container(
+                          color: Color.fromARGB(0, 256 ~/(i.brightTi4 - 273.15), 0, 0),
+                          height: i.scan,
+                          width: i.track,
+                          child: Icon(Icons.fireplace)),
                       )));
-      }
+
+    // print(spots.asMap().map((index, value) => MapEntry(index, value)).entries.where((e) => e.key % 3 == 0).toList());
+
+    print(spots.where((e) =>
+      e.point.longitude >= mapController.bounds!.west
+      && e.point.longitude <= mapController.bounds!.east
+      && e.point.latitude >= mapController.bounds!.south
+      && e.point.latitude <= mapController.bounds!.north
+      ).toList());
+    }
 
   List<Marker> createMarkersFromVIIRData() {
     return spots;
@@ -55,7 +93,6 @@ class _MainScreenState extends State<MainScreen> {
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(title: Text('ArcGIS')
-    
           ),
           body: Obx((() => 
              Padding(
@@ -68,10 +105,9 @@ class _MainScreenState extends State<MainScreen> {
                   Flexible(
                     child:
                    FlutterMap(
+                  mapController: mapController,
                   options: MapOptions(
-                    // center: LatLng(32.91081899999999, -92.734876),
-                    // center: LatLng(35.611909, -82.440682),
-                        center: LatLng(41.1075,37.32225),
+                    center: LatLng(41.1075,37.32225),
                     zoom: 14.0,
                     plugins: [EsriPlugin()],
 
@@ -82,21 +118,6 @@ class _MainScreenState extends State<MainScreen> {
                       'http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
                       subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
                     ),
-                    // FeatureLayerOptions("https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_Congressional_Districts/FeatureServer/0",
-                    //   "polygon",
-                    //   onTap: (dynamic attributes, LatLng location) {
-                    //     print(attributes);
-                    //   },
-                    //   render: (dynamic attributes){
-                    //     // You can render by attribute
-                    //     return PolygonOptions(
-                    //         borderColor: Colors.blueAccent,
-                    //         color: Colors.black12,
-                    //         borderStrokeWidth: 2
-                    //     );
-                    //   },
-                    //
-                    // ),
                     FeatureLayerOptions(
                       "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0",
                       "point",
@@ -112,27 +133,11 @@ class _MainScreenState extends State<MainScreen> {
                         print(attributes);
                       },
                     ),
-                              MarkerLayerOptions(
-                  markers: createMarkersFromVIIRData(),
-                ),
-                    // FeatureLayerOptions(
-                    //   "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/Denver_Streets_Centerline/FeatureServer/0",
-                    //   "polyline",
-                    //   render:(dynamic attributes){
-                    //     // You can render by attribute
-                    //     return PolygonLineOptions(
-                    //         borderColor: Colors.red,
-                    //         color: Colors.red,
-                    //         borderStrokeWidth: 2
-                    //     );
-                    //   },
-                    //   onTap: (attributes, LatLng location) {
-                    //     print(attributes);
-                    //   },
-                    // ),
-
+                    MarkerLayerOptions(
+                      markers: createMarkersFromVIIRData(),
+                    ),
                   ],
-                ) 
+                )
                   ),
                   TextButton(onPressed: () =>Get.toNamed(Routes.reportingScreen), child: Text("Report")),
                 ],
@@ -142,9 +147,5 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
     );
-  }
-  
-  void getWindData() {
-    
   }
 }

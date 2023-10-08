@@ -14,7 +14,7 @@ WindDirection _$WindDirectionFromJson(Map<String, dynamic> json) =>
       utcOffsetSeconds: json['utc_offset_seconds'] as int,
       timezone: json['timezone'] as String,
       timezoneAbbreviation: json['timezone_abbreviation'] as String,
-      elevation: json['elevation'] as int,
+      elevation: (json['elevation'] as num).toDouble(),
       hourlyUnits:
           HourlyUnits.fromJson(json['hourly_units'] as Map<String, dynamic>),
       hourly: Hourly.fromJson(json['hourly'] as Map<String, dynamic>),
