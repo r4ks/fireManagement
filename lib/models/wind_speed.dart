@@ -9,23 +9,23 @@ Iterable<WindSpeed> WindSpeedFromJson(Iterable<Map<String, dynamic>> list) =>
 @JsonSerializable()
 class WindSpeed {
     @JsonKey(name: "latitude")
-    double latitude;
+    double? latitude;
     @JsonKey(name: "longitude")
-    double longitude;
+    double? longitude;
     @JsonKey(name: "generationtime_ms")
-    double generationtimeMs;
+    double? generationtimeMs;
     @JsonKey(name: "utc_offset_seconds")
-    int utcOffsetSeconds;
+    int? utcOffsetSeconds;
     @JsonKey(name: "timezone")
-    String timezone;
+    String? timezone;
     @JsonKey(name: "timezone_abbreviation")
-    String timezoneAbbreviation;
+    String? timezoneAbbreviation;
     @JsonKey(name: "elevation")
-    int elevation;
+    double? elevation;
     @JsonKey(name: "hourly_units")
-    HourlyUnits hourlyUnits;
+    HourlyUnits? hourlyUnits;
     @JsonKey(name: "hourly")
-    Hourly hourly;
+    Hourly? hourly;
 
     WindSpeed({
         required this.latitude,

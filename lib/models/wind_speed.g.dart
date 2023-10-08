@@ -7,16 +7,19 @@ part of 'wind_speed.dart';
 // **************************************************************************
 
 WindSpeed _$WindSpeedFromJson(Map<String, dynamic> json) => WindSpeed(
-      latitude: (json['latitude'] as num).toDouble(),
-      longitude: (json['longitude'] as num).toDouble(),
-      generationtimeMs: (json['generationtime_ms'] as num).toDouble(),
-      utcOffsetSeconds: json['utc_offset_seconds'] as int,
-      timezone: json['timezone'] as String,
-      timezoneAbbreviation: json['timezone_abbreviation'] as String,
-      elevation: json['elevation'] as int,
-      hourlyUnits:
-          HourlyUnits.fromJson(json['hourly_units'] as Map<String, dynamic>),
-      hourly: Hourly.fromJson(json['hourly'] as Map<String, dynamic>),
+      latitude: (json['latitude'] as num?)?.toDouble(),
+      longitude: (json['longitude'] as num?)?.toDouble(),
+      generationtimeMs: (json['generationtime_ms'] as num?)?.toDouble(),
+      utcOffsetSeconds: json['utc_offset_seconds'] as int?,
+      timezone: json['timezone'] as String?,
+      timezoneAbbreviation: json['timezone_abbreviation'] as String?,
+      elevation: (json['elevation'] as num?)?.toDouble(),
+      hourlyUnits: json['hourly_units'] == null
+          ? null
+          : HourlyUnits.fromJson(json['hourly_units'] as Map<String, dynamic>),
+      hourly: json['hourly'] == null
+          ? null
+          : Hourly.fromJson(json['hourly'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$WindSpeedToJson(WindSpeed instance) => <String, dynamic>{
