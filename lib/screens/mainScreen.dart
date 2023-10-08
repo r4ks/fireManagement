@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map_arcgis/flutter_map_arcgis.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_arcgis_example/controllers/alarm_ctrl.dart';
+import 'package:flutter_map_arcgis_example/controllers/report_ctrl.dart';
 import 'package:flutter_map_arcgis_example/widgets/alarm_Widget.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
@@ -103,6 +104,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
 
     AlarmController alarm_controller = Get.find<AlarmController>();
+    ReportController reportController = Get.find<ReportController>();
     // TODO: implement build
     return SafeArea(
       child: Scaffold(
@@ -153,7 +155,10 @@ class _MainScreenState extends State<MainScreen> {
                     MarkerLayerOptions(
                       markers: windDirections,
                     ),
-
+                    //Bisher Fake Markers
+                    MarkerLayerOptions(
+                      markers: reportController.bisherMarkers.value,
+                    ),
                     // danger zone
                     CircleLayerOptions(
                       circles: [
@@ -170,7 +175,7 @@ class _MainScreenState extends State<MainScreen> {
                   ],
                 )
                   ),
-                  TextButton(onPressed: () => alarm_controller.isAlarm.value = true, child: Text("Test"),//Get.toNamed(Routes.reportingScreen), child: Text("Report")
+                  TextButton(onPressed: () => Get.toNamed(Routes.reportingScreen), child: Text("Report")
                   
                   ),
                 ],
